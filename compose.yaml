@@ -1,0 +1,44 @@
+services:
+#  st_frontend:
+#    build:
+#      context: .
+#      dockerfile: ./docker/st_frontend/Dockerfile
+#    container_name: st_frontend_container
+#    tty: true
+#    volumes:
+#      - ./st_frontend-app/st_frontend:/app/st_frontend
+#    command: sh -c "cd /app/st_frontend && yarn install --network-timeout 100000 && yarn dev"
+#    environment:
+#      - WATCHPACK_POLLING=true
+#    ports:
+#      - 3000:3000
+  grpc_task_backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    container_name: grpc_task_backend_container
+    ports:
+      - 8080:8080
+    tty: true
+    volumes:
+      - ./backend:/opt/grpc_task_backend
+    # command: sh -c "go mod tidy && air -c .air.toml"
+  grpc_db_mysql8:
+    build:
+      context: .
+      dockerfile: ./docker/database/Dockerfile
+    env_file: ./docker/database/db_env_file
+    container_name: grpc_db_mysql8_container
+    volumes:
+      - grpc_db_mysql8:/var/lib/mysql
+      - ./docker/database/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./backend/migrations/schema:/docker-entrypoint-initdb.d
+      - ./backend/migrations/schema:/etc/ddl
+      - ./docker/database/logs:/var/log/mysql
+    ports:
+      - 3306:3306
+    links:
+      - grpc_task_backend
+volumes:
+  grpc_db_mysql8:
+    name: grpc_db_mysql8
