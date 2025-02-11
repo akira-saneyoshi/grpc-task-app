@@ -18,6 +18,14 @@ RUN apk add --no-cache unzip curl \
   && rm -rf protoc protoc.zip \
   && apk add --no-cache protobuf-dev
 
+RUN curl -L https://github.com/vektra/mockery/releases/download/v2.52.1/mockery_2.52.1_Linux_x86_64.tar.gz | tar xvz && mv ./mockery /usr/bin/mockery \
+  && curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv ./migrate /usr/bin/migrate
+
 WORKDIR /opt/grpc_task_backend
 COPY ./backend /opt/grpc_task_backend
 RUN go mod tidy
+RUN go install github.com/air-verse/air@latest
+RUN go install github.com/bufbuild/buf/cmd/buf@latest \
+  && go install google.golang.org/protobuf/cmd/protoc-gen-go@latest \
+  && go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+RUN go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
