@@ -3,3 +3,16 @@ docker/database/data/
 docker/database/initdb.d/
 docker/database/logs/
 docker/database/secrets/
+
+dist
+tmp
+
+# generated files
+interfaces/rpc
+infrastructure/persistence/model/db
+test/mocks
+
+# log files
+
+*.log
+*.txt
