@@ -1,3 +1,5 @@
+connectrpc.com/connect v1.18.1 h1:PAg7CjSAGvscaf6YZKUefjoih5Z/qYkyaTrBW8xvYPw=
+connectrpc.com/connect v1.18.1/go.mod h1:0292hj1rnx8oFrStN7cB4jjVBeqs+Yx5yDIC2prWDO8=
 github.com/bufbuild/buf v1.50.0 h1:gm/GtEUAkYaO27FgUesY4NpcwOpOdJgygjRKcdt41zE=
 github.com/bufbuild/buf v1.50.0/go.mod h1:tlpWuRe4EjA4w7O+Z/R2k2Df2eJtKsds2hofIIPEoSY=
 github.com/sqlc-dev/sqlc v1.28.0 h1:2QB4X22pKNpKMyb8dRLnqZwMXW6S+ZCyYCpa+3/ICcI=

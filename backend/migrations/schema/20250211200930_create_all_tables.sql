@@ -6,7 +6,7 @@ USE mydatabase;
 
 -- usersテーブルを作成するSQL
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(50) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- tasksテーブルを作成するSQL
 CREATE TABLE IF NOT EXISTS tasks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    id VARCHAR(50) AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',

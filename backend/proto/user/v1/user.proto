@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package proto.user.v1;
+
+option go_package = "github.com/akira-saneyoshi/task-app/interfaces/proto/user/v1;userv1";
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+}
+
+message User {
+  string user_id = 1;
+  string user_name = 2;
+  string email = 3;
+  bool is_active = 4;
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
