@@ -1,0 +1,13 @@
+version: 2
+sql:
+  - engine: "mysql"
+    schema: "./migrations/schema"
+    queries: "./migrations/query"
+    gen:
+      go:
+        package: "db"
+        out: "./infrastructure/persistence/model/db"
+        sql_package: "database/sql"
+        emit_interface: true
+        emit_empty_slices: true
+        emit_pointers_for_null_types: true
