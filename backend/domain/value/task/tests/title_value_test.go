@@ -4,19 +4,19 @@ import (
 	"errors"
 	"testing"
 
-	value "github.com/akira-saneyoshi/task-app/domain/object/value/user"
+	value "github.com/akira-saneyoshi/task-app/domain/object/value/title"
 
 	"github.com/stretchr/testify/require"
 )
 
-func TestEmail_Validate(tt *testing.T) {
+func TestTitle_Validate(tt *testing.T) {
 	testcases := []struct {
 		title string
-		arg   *value.Email
+		arg   *value.Title
 		err   error
 	}{
-		{"正常系: 入力データが正しい場合", value.NewEmail("test@example.com"), nil},
-		{"準正常系: 入力データが空の場合", value.NewEmail(""), errors.New("email is empty")},
+		{"正常系: 入力データが正しい場合", value.NewTitle("title-test"), nil},
+		{"準正常系: 入力データが空の場合", value.NewTitle(""), errors.New("title is empty")},
 	}
 	for _, v := range testcases {
 		tt.Run(v.title, func(t *testing.T) {
@@ -29,5 +29,4 @@ func TestEmail_Validate(tt *testing.T) {
 			}
 		})
 	}
-
 }
