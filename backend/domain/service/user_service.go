@@ -9,7 +9,6 @@ import (
 	"github.com/akira-saneyoshi/task-app/domain/repository"
 )
 
-// ユーザーのドメインロジック
 type IUserService interface {
 	FindUserByID(ctx context.Context, id string) (*entity.User, error)
 }

@@ -7,20 +7,18 @@ import (
 	"github.com/akira-saneyoshi/task-app/domain"
 	"github.com/akira-saneyoshi/task-app/domain/object/entity"
 	"github.com/akira-saneyoshi/task-app/domain/object/value"
-	task "github.com/akira-saneyoshi/task-app/domain/object/value/task"
 	"github.com/akira-saneyoshi/task-app/domain/repository"
 	"github.com/akira-saneyoshi/task-app/utils/clock"
 	"github.com/akira-saneyoshi/task-app/utils/identification"
 )
 
-// TaskService はタスクに関するドメインロジックを提供します。
 type ITaskService interface {
 	FindTaskByID(ctx context.Context, id string) (*entity.Task, error)
 	FindTasksByUserID(ctx context.Context, userID string) ([]*entity.Task, error)
 	CreateTask(ctx context.Context, userID string, title string, description *string, status string, dueDate *time.Time) (string, error)
-	ChangeTaskDetails(ctx context.Context, id string, userID string, title string, description *string, status string, dueDate *time.Time) error // Title, Description, Status, DueDateをまとめて変更する関数に変更
-	ChangeTaskStatus(ctx context.Context, id string, userID string, status string) error                                                         // Status変更用関数（そのまま残す）
-	ChangeTaskDueDate(ctx context.Context, id string, userID string, dueDate *time.Time) error                                                   // DueDate変更用関数（そのまま残す）
+	UpdateTaskDetails(ctx context.Context, id string, userID string, title string, description *string, status string, dueDate *time.Time) error
+	UpdateTaskStatus(ctx context.Context, id string, userID string, status string) error
+	UpdateTaskDueDate(ctx context.Context, id string, userID string, dueDate *time.Time) error
 	DeleteTask(ctx context.Context, id, userID string) error
 }
 
@@ -58,15 +56,15 @@ func (s *TaskService) FindTasksByUserID(ctx context.Context, userID string) ([]*
 
 func (s *TaskService) CreateTask(ctx context.Context, userID string, title string, description *string, status string, dueDate *time.Time) (string, error) {
 	now := s.IClockManager.GetNow()
-	taskStatus := entity.StatusPending // デフォルトStatusをPendingに設定
+	taskStatus := entity.StatusPending
 	if status != "" {
-		taskStatus = entity.Status(status) // 引数statusが指定されている場合はそちらを使う
+		taskStatus = entity.Status(status)
 	}
 
 	arg := &entity.Task{
 		ID:          value.NewID(s.IIDManager.GenerateID()),
 		UserID:      value.NewID(userID),
-		Title:       task.NewTitle(title),
+		Title:       title,
 		Description: description,
 		Status:      taskStatus,
 		DueDate:     dueDate,
@@ -83,8 +81,7 @@ func (s *TaskService) CreateTask(ctx context.Context, userID string, title strin
 	return createdID, nil
 }
 
-// ChangeTaskDetails はタスクのTitle, Description, Status, DueDateをまとめて変更します。
-func (s *TaskService) ChangeTaskDetails(ctx context.Context, id string, userID string, title string, description *string, status string, dueDate *time.Time) error {
+func (s *TaskService) UpdateTaskDetails(ctx context.Context, id string, userID string, title string, description *string, status string, dueDate *time.Time) error {
 	if err := value.NewID(id).Validate(); err != nil {
 		return err
 	}
@@ -118,7 +115,7 @@ func (s *TaskService) ChangeTaskDetails(ctx context.Context, id string, userID s
 	return nil
 }
 
-func (s *TaskService) ChangeTaskStatus(ctx context.Context, id string, userID string, status string) error {
+func (s *TaskService) UpdateTaskStatus(ctx context.Context, id string, userID string, status string) error {
 	if err := value.NewID(id).Validate(); err != nil {
 		return err
 	}
@@ -144,7 +141,7 @@ func (s *TaskService) ChangeTaskStatus(ctx context.Context, id string, userID st
 	return nil
 }
 
-func (s *TaskService) ChangeTaskDueDate(ctx context.Context, id string, userID string, dueDate *time.Time) error { // DueDate変更用関数（そのまま残す）
+func (s *TaskService) UpdateTaskDueDate(ctx context.Context, id string, userID string, dueDate *time.Time) error {
 	if err := value.NewID(id).Validate(); err != nil {
 		return err
 	}
