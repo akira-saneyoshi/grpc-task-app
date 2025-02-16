@@ -1,12 +1,12 @@
 services:
-#  st_frontend:
+#  grpc_task_frontend:
 #    build:
 #      context: .
-#      dockerfile: ./docker/st_frontend/Dockerfile
-#    container_name: st_frontend_container
+#      dockerfile: ./docker/frontend/Dockerfile
+#    container_name: grpc_task_frontend
 #    tty: true
 #    volumes:
-#      - ./st_frontend-app/st_frontend:/app/st_frontend
+#      - ./frontend:/opt/grpc_task_frontend
 #    command: sh -c "cd /app/st_frontend && yarn install --network-timeout 100000 && yarn dev"
 #    environment:
 #      - WATCHPACK_POLLING=true
