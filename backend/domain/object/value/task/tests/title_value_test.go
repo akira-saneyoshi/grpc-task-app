@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	value "github.com/akira-saneyoshi/task-app/domain/object/value/title"
+	value "github.com/akira-saneyoshi/task-app/domain/object/value/task"
 
 	"github.com/stretchr/testify/require"
 )

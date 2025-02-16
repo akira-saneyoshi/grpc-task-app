@@ -4,16 +4,17 @@ import (
 	"time"
 
 	"github.com/akira-saneyoshi/task-app/domain/object/value"
+	user "github.com/akira-saneyoshi/task-app/domain/object/value/user"
 )
 
 type User struct {
-	ID        *value.ID       `json:"id"`
-	Name      *value.Name     `json:"name"`
-	Email     *value.Email    `json:"email"`
-	Password  *value.Password `json:"password"`
-	IsActive  bool            `json:"is_active"`
-	CreatedAt time.Time       `json:"created_at"`
-	UpdatedAt time.Time       `json:"updated_at"`
+	ID        *value.ID      `json:"id"`
+	Name      *user.Name     `json:"name"`
+	Email     *user.Email    `json:"email"`
+	Password  *user.Password `json:"password"`
+	IsActive  bool           `json:"is_active"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 func (u *User) Validate() error {
