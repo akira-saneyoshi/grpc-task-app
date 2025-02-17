@@ -8,7 +8,8 @@ import (
 	"github.com/akira-saneyoshi/task-app/interfaces/dto"
 )
 
-type CreateTaskParams struct {
+type UpdateTaskDetailsParams struct {
+	id          dto.IDParam
 	userID      dto.IDParam
 	title       string
 	description *string
@@ -16,12 +17,13 @@ type CreateTaskParams struct {
 	dueDate     *time.Time
 }
 
-func NewCreateTaskParams(userID string, title string, description *string, status string, dueDate *time.Time) *CreateTaskParams {
+func NewUpdateTaskDetailsParams(id string, userID string, title string, description *string, status string, dueDate *time.Time) *UpdateTaskDetailsParams {
 	taskStatus := entity.StatusPending
 	if status != "" {
 		taskStatus = entity.Status(status)
 	}
-	return &CreateTaskParams{
+	return &UpdateTaskDetailsParams{
+		id:          *dto.NewIDParam(id),
 		userID:      *dto.NewIDParam(userID),
 		title:       title,
 		description: description,
@@ -30,27 +32,34 @@ func NewCreateTaskParams(userID string, title string, description *string, statu
 	}
 }
 
-func (p *CreateTaskParams) UserID() string {
+func (p *UpdateTaskDetailsParams) ID() string {
+	return p.id.Value()
+}
+
+func (p *UpdateTaskDetailsParams) UserID() string {
 	return p.userID.Value()
 }
 
-func (p *CreateTaskParams) Title() string {
+func (p *UpdateTaskDetailsParams) Title() string {
 	return p.title
 }
 
-func (p *CreateTaskParams) Description() *string {
+func (p *UpdateTaskDetailsParams) Description() *string {
 	return p.description
 }
 
-func (p *CreateTaskParams) Status() entity.Status {
+func (p *UpdateTaskDetailsParams) Status() entity.Status {
 	return p.status
 }
 
-func (p *CreateTaskParams) DueDate() *time.Time {
+func (p *UpdateTaskDetailsParams) DueDate() *time.Time {
 	return p.dueDate
 }
 
-func (p *CreateTaskParams) Validate() error {
+func (p *UpdateTaskDetailsParams) Validate() error {
+	if err := p.id.Validate(); err != nil {
+		return err
+	}
 	if err := p.userID.Validate(); err != nil {
 		return err
 	}
