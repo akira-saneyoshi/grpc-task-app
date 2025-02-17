@@ -1,5 +1,7 @@
-FROM golang:1.23.6-alpine3.21
+FROM golang:1.24.0-alpine3.21
 ARG PROTOBUF_VERSION=29.3
+ARG MOCKERY_VERSION=2.52.1
+ARG MIGRATE=4.18.2
 EXPOSE 8080
 
 RUN apk update \
@@ -18,8 +20,8 @@ RUN apk add --no-cache unzip curl \
   && rm -rf protoc protoc.zip \
   && apk add --no-cache protobuf-dev
 
-RUN curl -L https://github.com/vektra/mockery/releases/download/v2.52.1/mockery_2.52.1_Linux_x86_64.tar.gz | tar xvz && mv ./mockery /usr/bin/mockery \
-  && curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz && mv ./migrate /usr/bin/migrate
+RUN curl -L https://github.com/vektra/mockery/releases/download/v${MOCKERY_VERSION}/mockery_${MOCKERY_VERSION}_Linux_x86_64.tar.gz | tar xvz && mv ./mockery /usr/bin/mockery \
+  && curl -L https://github.com/golang-migrate/migrate/releases/download/v${MIGRATE}/migrate.linux-amd64.tar.gz | tar xvz && mv ./migrate /usr/bin/migrate
 
 WORKDIR /opt/grpc_task_backend
 COPY ./backend /opt/grpc_task_backend

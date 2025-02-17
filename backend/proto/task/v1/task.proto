@@ -10,6 +10,7 @@ service TaskService {
   rpc GetTaskList(GetTaskListRequest) returns (GetTaskListResponse) {}
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse) {}
   rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse) {}
+  rpc UpdateTaskDueDate(UpdateTaskDueDateRequest) returns (UpdateTaskDueDateResponse) {}
   rpc UpdateTaskDetails(UpdateTaskDetailsRequest) returns (UpdateTaskDetailsResponse) {}
   rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse) {}
 }
@@ -24,9 +25,9 @@ message Task {
   string id = 1;
   string user_id = 2;
   string title = 3;
-  string description = 4;
+  optional string description = 4;
   TaskStatus status = 5;
-  string due_date = 6;
+  google.protobuf.Timestamp due_date = 6;
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
 }
@@ -56,6 +57,15 @@ message UpdateTaskStatusRequest {
 }
 
 message UpdateTaskStatusResponse {
+  //
+}
+
+message UpdateTaskDueDateRequest {
+  string task_id = 1;
+  string due_date = 2;
+}
+
+message UpdateTaskDueDateResponse {
   //
 }
 
