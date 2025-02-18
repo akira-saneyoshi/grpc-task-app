@@ -5,11 +5,10 @@ import (
 
 	"github.com/akira-saneyoshi/task-app/application"
 	"github.com/akira-saneyoshi/task-app/domain/object/entity"
-	"github.com/akira-saneyoshi/task-app/interfaces/dto"
 )
 
 type CreateTaskParams struct {
-	userID      dto.IDParam
+	userID      IDParam
 	title       string
 	description *string
 	status      entity.Status
@@ -22,7 +21,7 @@ func NewCreateTaskParams(userID string, title string, description *string, statu
 		taskStatus = entity.Status(status)
 	}
 	return &CreateTaskParams{
-		userID:      *dto.NewIDParam(userID),
+		userID:      *NewIDParam(userID),
 		title:       title,
 		description: description,
 		status:      taskStatus,
