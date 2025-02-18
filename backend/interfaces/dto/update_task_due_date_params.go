@@ -2,20 +2,18 @@ package dto
 
 import (
 	"time"
-
-	"github.com/akira-saneyoshi/task-app/interfaces/dto"
 )
 
 type UpdateTaskDueDateParams struct {
-	id      dto.IDParam
-	userID  dto.IDParam
+	id      IDParam
+	userID  IDParam
 	dueDate *time.Time
 }
 
 func NewUpdateTaskDueDateParams(id string, userID string, dueDate *time.Time) *UpdateTaskDueDateParams {
 	return &UpdateTaskDueDateParams{
-		id:      *dto.NewIDParam(id),
-		userID:  *dto.NewIDParam(userID),
+		id:      *NewIDParam(id),
+		userID:  *NewIDParam(userID),
 		dueDate: dueDate,
 	}
 }
