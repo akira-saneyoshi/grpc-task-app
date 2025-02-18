@@ -6,6 +6,7 @@ import (
 
 	"github.com/akira-saneyoshi/task-app/domain/object/entity"
 	"github.com/akira-saneyoshi/task-app/infrastructure/persistence/model/db"
+	task_v1 "github.com/akira-saneyoshi/task-app/interfaces/proto/task/v1"
 )
 
 func ConvertNullString(ns sql.NullString) *string {
@@ -60,5 +61,44 @@ func NewSQLNullTime(t time.Time) sql.NullTime {
 	return sql.NullTime{
 		Time:  t,
 		Valid: !t.IsZero(),
+	}
+}
+
+func ConvertStatus(entityStatus entity.Status) task_v1.TaskStatus {
+	switch entityStatus {
+	case entity.StatusPending:
+		return task_v1.TaskStatus_TASK_STATUS_PENDING_UNSPECIFIED
+	case entity.StatusInProgress:
+		return task_v1.TaskStatus_TASK_STATUS_IN_PROGRESS
+	case entity.StatusCompleted:
+		return task_v1.TaskStatus_TASK_STATUS_COMPLETED
+	default:
+		return task_v1.TaskStatus_TASK_STATUS_PENDING_UNSPECIFIED
+	}
+}
+
+func ConvertTaskStatusToEntityStatus(protoStatus task_v1.TaskStatus) entity.Status {
+	switch protoStatus {
+	case task_v1.TaskStatus_TASK_STATUS_PENDING_UNSPECIFIED:
+		return entity.StatusPending
+	case task_v1.TaskStatus_TASK_STATUS_IN_PROGRESS:
+		return entity.StatusInProgress
+	case task_v1.TaskStatus_TASK_STATUS_COMPLETED:
+		return entity.StatusCompleted
+	default:
+		return entity.StatusPending
+	}
+}
+
+func ConvertEntityStatusToString(entityStatus entity.Status) string {
+	switch entityStatus {
+	case entity.StatusPending:
+		return "pending"
+	case entity.StatusInProgress:
+		return "in_progress"
+	case entity.StatusCompleted:
+		return "completed"
+	default:
+		return "pending"
 	}
 }
