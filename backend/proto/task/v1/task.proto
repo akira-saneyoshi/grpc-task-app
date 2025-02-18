@@ -9,8 +9,6 @@ option go_package = "github.com/akira-saneyoshi/task-app/interfaces/proto/task/v
 service TaskService {
   rpc GetTaskList(GetTaskListRequest) returns (GetTaskListResponse) {}
   rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse) {}
-  rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse) {}
-  rpc UpdateTaskDueDate(UpdateTaskDueDateRequest) returns (UpdateTaskDueDateResponse) {}
   rpc UpdateTaskDetails(UpdateTaskDetailsRequest) returns (UpdateTaskDetailsResponse) {}
   rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse) {}
 }
@@ -27,7 +25,7 @@ message Task {
   string title = 3;
   optional string description = 4;
   TaskStatus status = 5;
-  google.protobuf.Timestamp due_date = 6;
+  optional google.protobuf.Timestamp due_date = 6;
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
 }
@@ -49,24 +47,6 @@ message CreateTaskRequest {
 
 message CreateTaskResponse {
   string created_id = 1;
-}
-
-message UpdateTaskStatusRequest {
-  string task_id = 1;
-  TaskStatus status = 2;
-}
-
-message UpdateTaskStatusResponse {
-  //
-}
-
-message UpdateTaskDueDateRequest {
-  string task_id = 1;
-  string due_date = 2;
-}
-
-message UpdateTaskDueDateResponse {
-  //
 }
 
 message UpdateTaskDetailsRequest {
