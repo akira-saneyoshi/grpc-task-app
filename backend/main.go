@@ -17,19 +17,25 @@ import (
 	"github.com/akira-saneyoshi/task-app/interfaces/proto/task/v1/taskv1connect"
 	"github.com/akira-saneyoshi/task-app/interfaces/proto/user/v1/userv1connect"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
+
+	grpcreflect "connectrpc.com/grpcreflect"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("[ERROR] Error loading .env file, using environment variables")
+	}
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func run() error {
-
 	var issuer, keyPath, url string
 	var ok bool
 	if issuer, ok = os.LookupEnv("REPO_NAME"); !ok {
@@ -72,10 +78,20 @@ func run() error {
 
 	authInterceptor := connect.WithInterceptors(interceptor.NewAuthInterceptor(issuer, keyPath))
 
+	reflector := grpcreflect.NewStaticReflector(
+		// 登録するサービス名を指定 (proto ファイルの service 名)
+		authv1connect.AuthServiceName,
+		userv1connect.UserServiceName,
+		taskv1connect.TaskServiceName,
+	)
+
 	mux := http.NewServeMux()
 	mux.Handle(authv1connect.NewAuthServiceHandler(authServer))
 	mux.Handle(userv1connect.NewUserServiceHandler(userServer))
 	mux.Handle(taskv1connect.NewTaskServiceHandler(taskServer, authInterceptor))
+	// リフレクション用のパスを登録
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
 	return http.ListenAndServe(
 		"localhost:8080",

@@ -6,12 +6,14 @@ require (
 	connectrpc.com/connect v1.18.1
 	github.com/go-sql-driver/mysql v1.9.0
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lestrrat-go/jwx/v3 v3.0.0-alpha1
 	github.com/rs/cors v1.11.1
 	google.golang.org/protobuf v1.36.5
 )
 
 require (
+	connectrpc.com/grpcreflect v1.3.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect

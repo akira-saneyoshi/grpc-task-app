@@ -47,16 +47,19 @@ func (h *TaskHandler) GetTaskList(ctx context.Context, arg *connect.Request[task
 	}
 	tasks := make([]*task_v1.Task, len(res))
 	for i, v := range res {
-		tasks[i] = &task_v1.Task{
+		task := &task_v1.Task{
 			Id:          v.ID.Value(),
 			UserId:      v.UserID.Value(),
 			Title:       v.Title,
 			Description: v.Description,
 			Status:      convert.ConvertStatus(v.Status),
-			DueDate:     timestamppb.New(*v.DueDate),
 			CreatedAt:   timestamppb.New(v.CreatedAt),
 			UpdatedAt:   timestamppb.New(v.UpdatedAt),
 		}
+		if v.DueDate != nil {
+			task.DueDate = timestamppb.New(*v.DueDate)
+		}
+		tasks[i] = task
 	}
 	return connect.NewResponse(&task_v1.GetTaskListResponse{
 		Tasks: tasks,
