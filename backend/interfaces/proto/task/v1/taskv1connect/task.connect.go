@@ -37,12 +37,6 @@ const (
 	TaskServiceGetTaskListProcedure = "/proto.task.v1.TaskService/GetTaskList"
 	// TaskServiceCreateTaskProcedure is the fully-qualified name of the TaskService's CreateTask RPC.
 	TaskServiceCreateTaskProcedure = "/proto.task.v1.TaskService/CreateTask"
-	// TaskServiceUpdateTaskStatusProcedure is the fully-qualified name of the TaskService's
-	// UpdateTaskStatus RPC.
-	TaskServiceUpdateTaskStatusProcedure = "/proto.task.v1.TaskService/UpdateTaskStatus"
-	// TaskServiceUpdateTaskDueDateProcedure is the fully-qualified name of the TaskService's
-	// UpdateTaskDueDate RPC.
-	TaskServiceUpdateTaskDueDateProcedure = "/proto.task.v1.TaskService/UpdateTaskDueDate"
 	// TaskServiceUpdateTaskDetailsProcedure is the fully-qualified name of the TaskService's
 	// UpdateTaskDetails RPC.
 	TaskServiceUpdateTaskDetailsProcedure = "/proto.task.v1.TaskService/UpdateTaskDetails"
@@ -54,8 +48,6 @@ const (
 type TaskServiceClient interface {
 	GetTaskList(context.Context, *connect.Request[v1.GetTaskListRequest]) (*connect.Response[v1.GetTaskListResponse], error)
 	CreateTask(context.Context, *connect.Request[v1.CreateTaskRequest]) (*connect.Response[v1.CreateTaskResponse], error)
-	UpdateTaskStatus(context.Context, *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error)
-	UpdateTaskDueDate(context.Context, *connect.Request[v1.UpdateTaskDueDateRequest]) (*connect.Response[v1.UpdateTaskDueDateResponse], error)
 	UpdateTaskDetails(context.Context, *connect.Request[v1.UpdateTaskDetailsRequest]) (*connect.Response[v1.UpdateTaskDetailsResponse], error)
 	DeleteTask(context.Context, *connect.Request[v1.DeleteTaskRequest]) (*connect.Response[v1.DeleteTaskResponse], error)
 }
@@ -83,18 +75,6 @@ func NewTaskServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(taskServiceMethods.ByName("CreateTask")),
 			connect.WithClientOptions(opts...),
 		),
-		updateTaskStatus: connect.NewClient[v1.UpdateTaskStatusRequest, v1.UpdateTaskStatusResponse](
-			httpClient,
-			baseURL+TaskServiceUpdateTaskStatusProcedure,
-			connect.WithSchema(taskServiceMethods.ByName("UpdateTaskStatus")),
-			connect.WithClientOptions(opts...),
-		),
-		updateTaskDueDate: connect.NewClient[v1.UpdateTaskDueDateRequest, v1.UpdateTaskDueDateResponse](
-			httpClient,
-			baseURL+TaskServiceUpdateTaskDueDateProcedure,
-			connect.WithSchema(taskServiceMethods.ByName("UpdateTaskDueDate")),
-			connect.WithClientOptions(opts...),
-		),
 		updateTaskDetails: connect.NewClient[v1.UpdateTaskDetailsRequest, v1.UpdateTaskDetailsResponse](
 			httpClient,
 			baseURL+TaskServiceUpdateTaskDetailsProcedure,
@@ -114,8 +94,6 @@ func NewTaskServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 type taskServiceClient struct {
 	getTaskList       *connect.Client[v1.GetTaskListRequest, v1.GetTaskListResponse]
 	createTask        *connect.Client[v1.CreateTaskRequest, v1.CreateTaskResponse]
-	updateTaskStatus  *connect.Client[v1.UpdateTaskStatusRequest, v1.UpdateTaskStatusResponse]
-	updateTaskDueDate *connect.Client[v1.UpdateTaskDueDateRequest, v1.UpdateTaskDueDateResponse]
 	updateTaskDetails *connect.Client[v1.UpdateTaskDetailsRequest, v1.UpdateTaskDetailsResponse]
 	deleteTask        *connect.Client[v1.DeleteTaskRequest, v1.DeleteTaskResponse]
 }
@@ -128,16 +106,6 @@ func (c *taskServiceClient) GetTaskList(ctx context.Context, req *connect.Reques
 // CreateTask calls proto.task.v1.TaskService.CreateTask.
 func (c *taskServiceClient) CreateTask(ctx context.Context, req *connect.Request[v1.CreateTaskRequest]) (*connect.Response[v1.CreateTaskResponse], error) {
 	return c.createTask.CallUnary(ctx, req)
-}
-
-// UpdateTaskStatus calls proto.task.v1.TaskService.UpdateTaskStatus.
-func (c *taskServiceClient) UpdateTaskStatus(ctx context.Context, req *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error) {
-	return c.updateTaskStatus.CallUnary(ctx, req)
-}
-
-// UpdateTaskDueDate calls proto.task.v1.TaskService.UpdateTaskDueDate.
-func (c *taskServiceClient) UpdateTaskDueDate(ctx context.Context, req *connect.Request[v1.UpdateTaskDueDateRequest]) (*connect.Response[v1.UpdateTaskDueDateResponse], error) {
-	return c.updateTaskDueDate.CallUnary(ctx, req)
 }
 
 // UpdateTaskDetails calls proto.task.v1.TaskService.UpdateTaskDetails.
@@ -154,8 +122,6 @@ func (c *taskServiceClient) DeleteTask(ctx context.Context, req *connect.Request
 type TaskServiceHandler interface {
 	GetTaskList(context.Context, *connect.Request[v1.GetTaskListRequest]) (*connect.Response[v1.GetTaskListResponse], error)
 	CreateTask(context.Context, *connect.Request[v1.CreateTaskRequest]) (*connect.Response[v1.CreateTaskResponse], error)
-	UpdateTaskStatus(context.Context, *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error)
-	UpdateTaskDueDate(context.Context, *connect.Request[v1.UpdateTaskDueDateRequest]) (*connect.Response[v1.UpdateTaskDueDateResponse], error)
 	UpdateTaskDetails(context.Context, *connect.Request[v1.UpdateTaskDetailsRequest]) (*connect.Response[v1.UpdateTaskDetailsResponse], error)
 	DeleteTask(context.Context, *connect.Request[v1.DeleteTaskRequest]) (*connect.Response[v1.DeleteTaskResponse], error)
 }
@@ -179,18 +145,6 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(taskServiceMethods.ByName("CreateTask")),
 		connect.WithHandlerOptions(opts...),
 	)
-	taskServiceUpdateTaskStatusHandler := connect.NewUnaryHandler(
-		TaskServiceUpdateTaskStatusProcedure,
-		svc.UpdateTaskStatus,
-		connect.WithSchema(taskServiceMethods.ByName("UpdateTaskStatus")),
-		connect.WithHandlerOptions(opts...),
-	)
-	taskServiceUpdateTaskDueDateHandler := connect.NewUnaryHandler(
-		TaskServiceUpdateTaskDueDateProcedure,
-		svc.UpdateTaskDueDate,
-		connect.WithSchema(taskServiceMethods.ByName("UpdateTaskDueDate")),
-		connect.WithHandlerOptions(opts...),
-	)
 	taskServiceUpdateTaskDetailsHandler := connect.NewUnaryHandler(
 		TaskServiceUpdateTaskDetailsProcedure,
 		svc.UpdateTaskDetails,
@@ -209,10 +163,6 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 			taskServiceGetTaskListHandler.ServeHTTP(w, r)
 		case TaskServiceCreateTaskProcedure:
 			taskServiceCreateTaskHandler.ServeHTTP(w, r)
-		case TaskServiceUpdateTaskStatusProcedure:
-			taskServiceUpdateTaskStatusHandler.ServeHTTP(w, r)
-		case TaskServiceUpdateTaskDueDateProcedure:
-			taskServiceUpdateTaskDueDateHandler.ServeHTTP(w, r)
 		case TaskServiceUpdateTaskDetailsProcedure:
 			taskServiceUpdateTaskDetailsHandler.ServeHTTP(w, r)
 		case TaskServiceDeleteTaskProcedure:
@@ -232,14 +182,6 @@ func (UnimplementedTaskServiceHandler) GetTaskList(context.Context, *connect.Req
 
 func (UnimplementedTaskServiceHandler) CreateTask(context.Context, *connect.Request[v1.CreateTaskRequest]) (*connect.Response[v1.CreateTaskResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.task.v1.TaskService.CreateTask is not implemented"))
-}
-
-func (UnimplementedTaskServiceHandler) UpdateTaskStatus(context.Context, *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.task.v1.TaskService.UpdateTaskStatus is not implemented"))
-}
-
-func (UnimplementedTaskServiceHandler) UpdateTaskDueDate(context.Context, *connect.Request[v1.UpdateTaskDueDateRequest]) (*connect.Response[v1.UpdateTaskDueDateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.task.v1.TaskService.UpdateTaskDueDate is not implemented"))
 }
 
 func (UnimplementedTaskServiceHandler) UpdateTaskDetails(context.Context, *connect.Request[v1.UpdateTaskDetailsRequest]) (*connect.Response[v1.UpdateTaskDetailsResponse], error) {
