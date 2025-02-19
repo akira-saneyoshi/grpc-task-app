@@ -15,6 +15,8 @@ const (
 	StatusCompleted  TaskStatus = "completed"
 )
 
+var ValidStatuses = []TaskStatus{StatusPending, StatusInProgress, StatusCompleted}
+
 type Task struct {
 	ID          *value.ID
 	UserID      *value.ID
@@ -49,8 +51,8 @@ func (t *Task) Validate() error {
 	if t.Title == "" {
 		return &domain.ErrValidationFailed{Msg: "[ERROR] title is empty"}
 	}
-	if t.Status != StatusPending && t.Status != StatusInProgress && t.Status != StatusCompleted {
-		return &domain.ErrValidationFailed{Msg: "[ERROR] invalid status value"}
+	if !IsValidStatus(t.Status) {
+		return &domain.ErrValidationFailed{Msg: "[ERROR] invalid task status value"}
 	}
 	return nil
 }
@@ -68,4 +70,13 @@ func (t *Task) SetDescription(description *string) {
 func (t *Task) ChangeStatus(status TaskStatus) {
 	t.Status = status
 	t.UpdatedAt = time.Now()
+}
+
+func IsValidStatus(s TaskStatus) bool {
+	for _, validStatus := range ValidStatuses {
+		if s == validStatus {
+			return true
+		}
+	}
+	return false
 }
