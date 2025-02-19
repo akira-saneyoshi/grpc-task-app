@@ -3,6 +3,7 @@ docker/database/data/
 docker/database/initdb.d/
 docker/database/logs/
 docker/database/secrets/
+docker/backend/key/*
 
 dist
 tmp

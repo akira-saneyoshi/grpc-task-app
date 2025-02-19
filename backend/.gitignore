@@ -1,0 +1,15 @@
+dist
+tmp
+
+# server-key
+secrets/server/key/*
+
+# generated files
+interfaces/rpc
+infrastructure/persistence/model/db
+test/mocks
+
+# log files
+*.log
+*.txt
+.env
