@@ -15,7 +15,7 @@ func NewAuthInterceptor(issuer string, keyPath string) connect.UnaryInterceptorF
 		return connect.UnaryFunc(func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			token := req.Header().Get("Authorization")
 			if token == "" {
-				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("error: invalid token"))
+				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("[ERROR] invalid token"))
 			}
 			token = strings.TrimPrefix(token, "Bearer")
 			token = strings.TrimSpace(token)
