@@ -26,6 +26,19 @@ type Task struct {
 	UpdatedAt   time.Time
 }
 
+func NewTask(id *value.ID, userID *value.ID, title string, description *string, status TaskStatus, dueDate *time.Time) *Task {
+	return &Task{
+		ID:          id,
+		UserID:      userID,
+		Title:       title,
+		Description: description,
+		Status:      status,
+		DueDate:     dueDate,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+}
+
 func (t *Task) Validate() error {
 	if err := t.ID.Validate(); err != nil {
 		return err
@@ -40,4 +53,19 @@ func (t *Task) Validate() error {
 		return &domain.ErrValidationFailed{Msg: "[ERROR] invalid status value"}
 	}
 	return nil
+}
+
+func (t *Task) SetTitle(title string) {
+	t.Title = title
+	t.UpdatedAt = time.Now()
+}
+
+func (t *Task) SetDescription(description *string) {
+	t.Description = description
+	t.UpdatedAt = time.Now()
+}
+
+func (t *Task) ChangeStatus(status TaskStatus) {
+	t.Status = status
+	t.UpdatedAt = time.Now()
 }
