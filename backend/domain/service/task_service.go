@@ -36,7 +36,7 @@ func (s *TaskService) FindTaskByID(ctx context.Context, id string) (*entity.Task
 	}
 	task, err := s.ITaskRepository.FindTaskByID(ctx, id)
 	if err != nil {
-		return nil, &domain.ErrNotFound{Msg: "task not found"}
+		return nil, &domain.ErrNotFound{Msg: "[ERROR] task not found"}
 	}
 	return task, nil
 }
@@ -81,7 +81,6 @@ func (s *TaskService) CreateTask(ctx context.Context, userID string, title strin
 }
 
 func (s *TaskService) UpdateTaskDetails(ctx context.Context, id string, userID string, title string, description *string, status string, dueDate *time.Time) error {
-	// ID のバリデーション
 	if err := value.NewID(id).Validate(); err != nil {
 		return err
 	}
@@ -89,40 +88,33 @@ func (s *TaskService) UpdateTaskDetails(ctx context.Context, id string, userID s
 		return err
 	}
 
-	// タスクの取得
 	task, err := s.ITaskRepository.FindTaskByID(ctx, id)
 	if err != nil {
-		return &domain.ErrNotFound{Msg: "task not found"}
+		return &domain.ErrNotFound{Msg: "[ERROR] task not found"}
 	}
 
-	// 権限チェック (UserID が一致するか)
 	if !task.UserID.Equal(userID) {
 		return &domain.ErrPermissionDenied{}
 	}
 
-	// タスクの各フィールドを更新
-	task.SetTitle(title)             // Title の更新
-	task.SetDescription(description) // Description の更新
+	task.SetTitle(title)
+	task.SetDescription(description)
 
-	// statusが空文字でない場合のみStatusを更新
 	if status != "" {
 		taskStatus := entity.TaskStatus(status)
-		task.ChangeStatus(taskStatus) // Status の更新
+		task.ChangeStatus(taskStatus)
 	}
 
-	// DueDate は nil でない場合のみ更新
 	if dueDate != nil {
-		task.DueDate = dueDate // DueDateの更新
+		task.DueDate = dueDate
 	}
 
-	task.UpdatedAt = s.IClockManager.GetNow() // UpdatedAt の更新
+	task.UpdatedAt = s.IClockManager.GetNow()
 
-	// 更新されたタスクのバリデーション
 	if err := task.Validate(); err != nil {
 		return err
 	}
 
-	// データベースの更新
 	if err := s.ITaskRepository.UpdateTask(ctx, task); err != nil {
 		return &domain.ErrQueryFailed{}
 	}
@@ -139,7 +131,7 @@ func (s *TaskService) DeleteTask(ctx context.Context, id string, userID string) 
 	}
 	task, err := s.ITaskRepository.FindTaskByID(ctx, id)
 	if err != nil {
-		return &domain.ErrNotFound{Msg: "task not found"}
+		return &domain.ErrNotFound{Msg: "[ERROR] task not found"}
 	}
 	if !task.UserID.Equal(userID) {
 		return &domain.ErrPermissionDenied{}
